@@ -3,23 +3,23 @@ name: Deploy hello world
 on:
   push:
     branches:
-    - main
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up SSH
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host:  ${{ secrets.REMOTE_HOST }}
-        username: maalsi
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd /srv/marcel
-          git pull origin main
-          docker-compose up --build -d
+      - name: Set up SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host:  ${{ secrets.REMOTE_HOST }}
+          username: maalsi
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /srv/marcel
+            git pull origin main
+            docker-compose up --build -d

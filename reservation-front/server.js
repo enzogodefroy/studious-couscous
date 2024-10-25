@@ -8,7 +8,7 @@ const PORT = 3000;
 
 app.use(cors());
 
-// Servir le fichier index.html pour la page d'accueil pour le front
+// Servir le fichier index.html pour la page d'accueil pour le front (front)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

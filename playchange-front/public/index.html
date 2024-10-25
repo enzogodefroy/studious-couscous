@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 5px 0;
+            width: calc(50% - 12px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #8dc4da;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #5bc0de;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        #clientTableBody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        #clientTableBody tr:nth-child(odd) {
+            background-color: #fff;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Soirées et Playlists</title>
+    <script>
+        async function fetchSoirees() {
+            const response = await fetch('http://localhost:3020/soirees');
+            const soirees = await response.json();
+            const soireesList = document.getElementById('soirees-list');
+            soireesList.innerHTML = '';
+            console.log(soirees);
+            soirees.forEach(soiree => {
+                const li = document.createElement('div');
+                li.textContent = `Soirée: ${soiree.nom} (${soiree.date})`;
+                li.style.margin = "10px 0";
+                const button = document.createElement('button');
+                button.textContent = 'Details';
+                button.style.margin = "0 10px";
+                li.appendChild(button);
+                button.onclick = () => fetchPlaylist(soiree.playlist);
+                soireesList.appendChild(li);
+            });
+        }
+
+        async function fetchPlaylist(playlistId) {
+            const response = await fetch(`http://localhost:3001/playlists/${playlistId}`);
+            const playlist = await response.json();
+
+            document.getElementById('playlist-name').value = playlist.nom;
+            document.getElementById('playlist-description').value = playlist.description;
+            document.getElementById('playlist-musiques').value = JSON.stringify(playlist.musiques, null, 2);
+            document.getElementById('playlist-id').value = playlistId;
+            
+            var hidden = document.querySelectorAll('.hidden');
+            if(hidden.length > 0) {
+                hidden.forEach(element => {
+                    element.classList.remove('hidden');
+                });
+            }
+        }
+
+        async function updatePlaylist() {
+            const playlistId = document.getElementById('playlist-id').value;
+            const updatedPlaylist = {
+                nom: document.getElementById('playlist-name').value,
+                description: document.getElementById('playlist-description').value,
+                musiques: JSON.parse(document.getElementById('playlist-musiques').value)
+            };
+
+            await fetch(`http://localhost:3001/playlists/${playlistId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedPlaylist),
+            });
+
+            alert('Playlist modifiée avec succès');
+            fetchSoirees(); // Recharger la liste des soirées
+        }
+
+        window.onload = fetchSoirees;
+    </script>
+</head>
+
+<body>
+    <h1>Liste des Soirées</h1>
+    <ul id="soirees-list"></ul>
+
+    <div class="hidden">
+        
+        <h2>Modifier une Playlist</h2>
+        <input type="hidden" id="playlist-id">
+        <label for="playlist-name">Nom de la Playlist:</label>
+        <input type="text" id="playlist-name"><br>
+        <label for="playlist-description">Description:</label>
+        <input type="text" id="playlist-description"><br>
+        <label for="playlist-musiques">Musiques (JSON):</label><br>
+        <textarea id="playlist-musiques" rows="10" cols="30"></textarea><br>
+        <div id="playlist-musiques-div"></div>
+        <button onclick="updatePlaylist()">Modifier Playlist</button>
+    </div>
+</body>
+
+</html>

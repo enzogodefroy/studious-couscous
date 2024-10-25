@@ -1,0 +1,59 @@
+[
+  {
+    "id": "af7b9536-0db9-4d23-b9cc-124197d662fd",
+    "nom": "Playlist rocksdv",
+    "description": "Du rock, c'est génial",
+    "musiques": [
+      {
+        "nom": "Smells Like Teen Spirit",
+        "auteur": "Nirvana"
+      },
+      {
+        "nom": "7 Nation Army",
+        "auteur": "The White Stripes"
+      },
+      {
+        "nom": "Eye of the Tiger",
+        "auteur": "Survivor"
+      }
+    ]
+  },
+  {
+    "id": "b1b3b3b3-0db9-4d23-b9cc-124197d662fd",
+    "nom": "Playlist classique",
+    "description": "Du classique, c'est génial",
+    "musiques": [
+      {
+        "nom": "La lettre à Élise",
+        "auteur": "Beethoven"
+      },
+      {
+        "nom": "La symphonie du Nouveau Monde",
+        "auteur": "Dvořák"
+      },
+      {
+        "nom": "La symphonie n°9",
+        "auteur": "Beethoven"
+      }
+    ]
+  },
+  {
+    "id": "921bad57-781e-4f0f-9fdd-40e8e46c60c1",
+    "nom": "Playlist rap",
+    "description": "Quand on y pense, si elle a pas dit non ..........................................................................",
+    "musiques": [
+      {
+        "nom": "In da club",
+        "auteur": "50cents"
+      },
+      {
+        "nom": "Pirates",
+        "auteur": "Booba"
+      },
+      {
+        "nom": "Au DD",
+        "auteur": "PNL"
+      }
+    ]
+  }
+]

@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        input,select {
+            padding: 10px;
+            margin: 5px 0;
+            width: calc(50% - 12px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #8dc4da;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #5bc0de;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        #clientTableBody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        #clientTableBody tr:nth-child(odd) {
+            background-color: #fff;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Soirées et Playlists</title>
+</head>
+
+<body>
+
+    <h1>Créer une nouvelle soirée</h1>
+  
+    <form id="soiree-form">
+      <!-- Sélection de la Playlist -->
+      <label for="nom">Sélectionner un nom :</label>
+      <input type="text" id="nom" name="nom" required>
+      <br><br>
+      <label for="playlist">Sélectionner une playlist :</label>
+      <select id="playlist-select" name="playlist" required>
+        <option value="">Sélectionner une playlist</option>
+      </select>
+  
+      <br><br>
+  
+      <!-- Sélection du Client -->
+      <label for="client">Sélectionner un client :</label>
+      <select id="client-select" name="client" required>
+        <option value="">Sélectionner un client</option>
+      </select>
+  
+      <br><br>
+  
+      <!-- Date de la soirée -->
+      <label for="date">Sélectionner une date :</label>
+      <input type="date" id="date" name="date" required>
+  
+      <br><br>
+  
+      <button type="submit">Créer la soirée</button>
+    </form>
+  
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Fetch la liste des playlists depuis localhost:3001/playlists
+        fetch('http://localhost:3001/playlists')
+          .then(response => response.json())
+          .then(data => {
+            const playlistSelect = document.getElementById('playlist-select');
+            data.forEach(playlist => {
+              const option = document.createElement('option');
+              option.value = playlist.id;
+              option.textContent = playlist.nom;
+              playlistSelect.appendChild(option);
+            });
+          })
+          .catch(error => console.error('Erreur lors du fetch des playlists :', error));
+  
+        // Fetch la liste des clients depuis localhost:3003/clients
+        fetch('http://localhost:3010/clients')
+          .then(response => response.json())
+          .then(data => {
+            const clientSelect = document.getElementById('client-select');
+            data.forEach(client => {
+              const option = document.createElement('option');
+              option.value = client.id;
+              option.textContent = `${client.nom} ${client.prenom}`;
+              clientSelect.appendChild(option);
+            });
+          })
+          .catch(error => console.error('Erreur lors du fetch des clients :', error));
+  
+        // Gestion de la soumission du formulaire
+        document.getElementById('soiree-form').addEventListener('submit', function (event) {
+          event.preventDefault();
+  
+          const playlist = document.getElementById('playlist-select').value;
+          const client = document.getElementById('client-select').value;
+          const date = document.getElementById('date').value;
+          const nom = document.getElementById('nom').value;
+  
+          if (!playlist || !client || !date) {
+            alert('Veuillez remplir tous les champs.');
+            return;
+          }
+  
+          // Création de l'objet à envoyer en POST
+          const soiree = {
+            nom: nom,
+            client: client,
+            playlist: playlist,
+            date: date
+          };console.log(JSON.stringify(soiree));
+          // Envoi de la requête POST vers localhost:3000/soirees
+          fetch('http://localhost:3020/soirees', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(soiree)
+          })
+            .then(response => response.json())
+            .then(data => {
+              alert('Soirée créée avec succès !');
+              console.log('Réponse du serveur :', data);
+            })
+            .catch(error => console.error('Erreur lors de la création de la soirée :', error));
+        });
+      });
+    </script>
+  
+  </body>
+
+</html>

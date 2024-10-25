@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Clients</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 5px 0;
+            width: calc(50% - 12px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #8dc4da;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #5bc0de;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        #clientTableBody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        #clientTableBody tr:nth-child(odd) {
+            background-color: #fff;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Ajouter un Client</h1>
+    <div>
+        <input type="text" id="nom" placeholder="Nom" required>
+        <input type="text" id="prenom" placeholder="Prénom" required>
+        <button id="ajouter">Ajouter</button>
+    </div>
+
+    <h2>Liste des Clients</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="clientTableBody">
+            <!-- Les clients seront ajoutés ici -->
+        </tbody>
+    </table>
+
+    <script>
+        const apiUrl = 'http://localhost:3000/clients'; // Remplacez par l'URL de votre API
+
+        async function fetchClients() {
+            const response = await fetch(apiUrl);
+            const clients = await response.json();
+            const tableBody = document.getElementById('clientTableBody');
+            tableBody.innerHTML = '';
+
+            clients.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.id}</td>
+                    <td>${client.nom}</td>
+                    <td>${client.prenom}</td>
+                    <td class="actions"><button onclick="supprimerClient(${client.id})">Supprimer</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function ajouterClient() {
+            const nom = document.getElementById('nom').value;
+            const prenom = document.getElementById('prenom').value;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nom, prenom }),
+            });
+
+            if (response.ok) {
+                fetchClients(); // Met à jour la liste des clients
+                document.getElementById('nom').value = '';
+                document.getElementById('prenom').value = '';
+            }
+        }
+
+        async function supprimerClient(id) {
+            const response = await fetch(`${apiUrl}/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                fetchClients(); // Met à jour la liste des clients
+            }
+        }
+
+        document.getElementById('ajouter').addEventListener('click', ajouterClient);
+        fetchClients(); // Charge les clients au démarrage
+    </script>
+
+</body>
+</html>

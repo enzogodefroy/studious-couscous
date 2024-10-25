@@ -1,0 +1,17 @@
+# Utiliser une image de base officielle Node.js
+FROM node:18
+
+# Définir le répertoire de travail dans le container
+WORKDIR /app
+
+# Copier le fichier package.json et package-lock.json
+COPY . .
+
+# Installer les dépendances
+RUN npm install
+
+# Exposer le port 3000 pour l'API
+EXPOSE 3000
+
+# Définir la commande de démarrage
+CMD ["npm", "start"]

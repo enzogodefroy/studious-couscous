@@ -1,0 +1,50 @@
+version: '3'
+services:
+
+  consul:
+    image: consul:1.12
+    command: agent -dev -client=0.0.0.0
+    ports:
+      - "8500:8500" # Consul UI
+    networks:
+      - app-network
+
+  clients-api:
+    build: ./clients-api
+    ports:
+      - "3010:3000"
+    networks:
+      - app-network
+
+  playlists-api:
+    build: ./playlists-api
+    ports:
+      - "8010-8012:3000"
+    networks:
+      - app-network
+    scale: 3
+
+  soirees-api:
+    build: ./soirees-api
+    ports:
+      - "3020:3000"
+    networks:
+      - app-network
+
+  playchange-front:
+    build: ./playchange-front
+    ports:
+      - "3030:3000"
+    networks:
+      - app-network
+
+  reservation-front:
+    build: ./reservation-front
+    ports:  
+      - "3040:3000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

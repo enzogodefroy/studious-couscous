@@ -22,7 +22,6 @@ jobs:
 
       - name: Deploy application via SSH
         run: |
-            cd /srv/marcel
-            git pull origin main
-            docker-compose up --build -d
-          EOF
+          cd /srv/marcel
+          git pull origin main
+          docker-compose up --build -d
